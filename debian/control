@@ -1,0 +1,26 @@
+Source: flapjack
+Section: python
+Priority: optional
+Maintainer: Philip Chimento <philip@endlessm.com>
+Build-Depends: debhelper (>= 9),
+               dh-python,
+               python3,
+               python3-all,
+               python3-pytest,
+               python3-setuptools
+Standards-Version: 3.9.8
+Homepage: https://github.com/endlessm/flapjack
+X-Python3-Version: >= 3.4
+
+Package: python3-flapjack
+Architecture: all
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         flatpak,
+         flatpak-builder,
+         git
+Description: Tool for developing components inside a flatpak runtime
+ Flapjack is a tool that lets you hack on one or more of the components
+ inside a flatpak runtime. You can make changes to the components and build
+ a new "development SDK" with your changed components. You can then test
+ your flatpak apps by running them against the development SDK.

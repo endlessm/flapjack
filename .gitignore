@@ -2,3 +2,9 @@
 /.eggs
 /*.egg-info
 *.pyc
+/.pybuild
+/debian/debhelper-build-stamp
+/debian/files
+/debian/*.debhelper*
+/debian/*.substvars
+/debian/python3-flapjack/
