@@ -76,7 +76,10 @@ class PyTestCommand(TestCommand):
         import shlex
         # Dependency only needs to be present when running tests
         import pytest
-        sys.exit(pytest.main(shlex.split(self.pytest_args) + ['--flake8']))
+        exitcode = pytest.main(shlex.split(self.pytest_args) + ['--flake8'])
+        if exitcode == 5:
+            sys.exit(0)  # no tests is okay, since we don't have any tests yet
+        sys.exit(exitcode)
 
 
 setup(
