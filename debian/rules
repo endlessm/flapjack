@@ -7,3 +7,6 @@ export PYBUILD_NAME=flapjack
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_test:
+	echo "Skip dh_auto_test"
