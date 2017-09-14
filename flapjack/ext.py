@@ -70,7 +70,7 @@ def _generate_manifest():
         m['sources'] = [collections.OrderedDict([
             ('type', 'git'),
             ('branch', 'flapjack'),
-            ('url', 'checkout/{}'.format(m['name'])),
+            ('url', '{}/{}'.format(config.checkoutdir, m['name'])),
         ])]
         config_opts = config.extra_module_config_opts.get(m['name'], [])
         if config_opts:
