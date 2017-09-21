@@ -237,4 +237,6 @@ class Update(Command):
                 continue
             if not os.path.exists(os.path.join(git_clone, '.git')):
                 continue
+            if not ext.git(git_clone, 'remote', output=True):
+                continue
             ext.git(git_clone, 'fetch')
