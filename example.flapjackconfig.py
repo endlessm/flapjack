@@ -23,6 +23,11 @@
 
 # checkoutdir = os.path.expanduser('~/checkout')
 
+# If you want to use flatpak's per-user installation instead of the system-wide
+# one, set this to True:
+
+# user_installation = False
+
 # -- RUNTIME SETUP ------------------------------------------------------------
 
 # This specifies the SDK runtime you want to hack on. We assume that its

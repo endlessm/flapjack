@@ -6,6 +6,7 @@ _CONFIG_FILE = os.path.expanduser('~/.config/flapjackconfig.py')
 
 workdir = os.path.expanduser('~/flapjack')
 checkoutdir = None  # compute from workdir if not specified
+user_installation = False
 
 sdk_upstream = 'git://git.gnome.org/gnome-sdk-images'
 sdk_upstream_branch = 'master'

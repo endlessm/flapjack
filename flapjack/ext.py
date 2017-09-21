@@ -25,10 +25,22 @@ def git(path, command, *args, output=False, code=False):
     subprocess.check_call(cmdline, cwd=path)
 
 
+def _takes_user_arg(command):
+    """Only certain flatpak commands take the --user argument, but we want to
+    ensure it's applied consistently throughout flapjack."""
+    return command in ('install', 'update', 'uninstall', 'list', 'info',
+                       'remote-add', 'remote-modify', 'remote-delete',
+                       'remote-ls', 'remotes', 'make-current')
+
+
 def flatpak(command, *args, output=False, code=False):
     """Run a flatpak command."""
 
-    cmdline = ['flatpak', command] + list(args)
+    user_arg = []
+    if config.user_installation and _takes_user_arg(command):
+        user_arg = ['--user']
+
+    cmdline = (['flatpak', command] + user_arg + list(args))
     if output:
         return subprocess.check_output(cmdline)
     if code:
