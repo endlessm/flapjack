@@ -8,7 +8,9 @@ workdir = os.path.expanduser('~/flapjack')
 checkoutdir = None  # compute from workdir if not specified
 
 sdk_upstream = 'git://git.gnome.org/gnome-sdk-images'
+sdk_upstream_branch = 'master'
 sdk_id = 'org.gnome.Sdk'
+sdk_branch = 'master'
 sdk_manifest_json = None  # compute from sdk_id if not specified
 sdk_repo_name = 'flapjack-source'
 sdk_repo_definition = 'https://sdk.gnome.org/gnome-nightly.flatpakrepo'

@@ -75,9 +75,11 @@ def ensure_runtime(remote, runtime, branch):
 def ensure_base_sdk():
     ext.flatpak('remote-add', '--if-not-exists', '--from',
                 config.sdk_repo_name, config.sdk_repo_definition)
-    ensure_runtime(config.sdk_repo_name, config.sdk_id, 'master')
-    ensure_runtime(config.sdk_repo_name, config.sdk_id + '.Debug', 'master')
-    ensure_runtime(config.sdk_repo_name, config.sdk_id + '.Locale', 'master')
+    ensure_runtime(config.sdk_repo_name, config.sdk_id, config.sdk_branch)
+    ensure_runtime(config.sdk_repo_name, config.sdk_id + '.Debug',
+                   config.sdk_branch)
+    ensure_runtime(config.sdk_repo_name, config.sdk_id + '.Locale',
+                   config.sdk_branch)
 
 
 def ensure_dev_sdk():
@@ -177,7 +179,11 @@ class Setup(Command):
 
     def execute(self, args):
         if not os.path.exists(config.upstream_sdk_checkout()):
-            ext.git(config.checkoutdir, 'clone', config.sdk_upstream)
+            ext.git(config.checkoutdir, 'clone', '--branch',
+                    config.sdk_upstream_branch, config.sdk_upstream)
+        else:
+            ext.git(config.upstream_sdk_checkout(), 'checkout',
+                    config.sdk_upstream_branch)
 
         ensure_base_sdk()
 

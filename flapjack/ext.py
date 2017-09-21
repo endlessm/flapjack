@@ -45,8 +45,9 @@ def _generate_manifest():
     manifest['separate-locales'] = False
     manifest['id'] = config.dev_sdk_id
     manifest.pop('id-platform', None)
-    manifest['branch'] = manifest['runtime-version'] = 'master'
+    manifest['branch'] = 'master'
     manifest['runtime'] = manifest['sdk'] = config.sdk_id
+    manifest['runtime-version'] = config.sdk_branch
     manifest.pop('metadata', None)
     manifest.pop('metadata-platform', None)
     manifest['sdk-extensions'] = [config.sdk_id + '.Debug',

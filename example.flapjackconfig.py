@@ -29,7 +29,9 @@
 # manifest comes from a git checkout.
 
 sdk_upstream = 'https://github.com/endlessm/endless-sdk-flatpak'
+# sdk_upstream_branch = 'master'
 sdk_id = 'com.endlessm.apps.Sdk'
+# sdk_branch = 'master'
 
 # The manifest is assumed to be in the root of the `sdk_upstream` git
 # repository, and the filename is `sdk_id` plus `.json.in`. Customize that here
