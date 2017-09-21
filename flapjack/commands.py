@@ -231,6 +231,7 @@ class Update(Command):
     def execute(self, args):
         ensure_base_sdk()
 
+        there_were_errors = False
         for entry in os.listdir(config.checkoutdir):
             git_clone = os.path.join(config.checkoutdir, entry)
             if not os.path.isdir(git_clone):
@@ -239,4 +240,12 @@ class Update(Command):
                 continue
             if not ext.git(git_clone, 'remote', output=True):
                 continue
-            ext.git(git_clone, 'fetch')
+            try:
+                ext.git(git_clone, 'fetch')
+            except subprocess.CalledProcessError:
+                print('Error updating {}'.format(entry))
+                there_were_errors = True
+
+        if there_were_errors:
+            print('Some repositories failed to update.')
+            return 1
