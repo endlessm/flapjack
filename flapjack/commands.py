@@ -14,7 +14,7 @@ mechanism for registering them, and the built-in subcommands. (If subcommands
 get more complicated, consider putting them in their own module.)"""
 
 _command_registry = {}
-_REPO = os.path.join(config.workdir, 'repo')
+_REPO = os.path.join(config.workdir(), 'repo')
 
 
 def register_command(name):
@@ -51,7 +51,7 @@ class Command:
     def _quick_setup(self):
         # Setup tasks that are inexpensive enough to do on every startup
         # instead of as part of "flapjack setup"
-        os.makedirs(config.checkoutdir, exist_ok=True)
+        os.makedirs(config.checkoutdir(), exist_ok=True)
         os.makedirs(_REPO, exist_ok=True)
 
         subprocess.check_call(['ostree', 'init', '--repo', _REPO,
@@ -74,18 +74,19 @@ def ensure_runtime(remote, runtime, branch):
 
 def ensure_base_sdk():
     ext.flatpak('remote-add', '--if-not-exists', '--from',
-                config.sdk_repo_name, config.sdk_repo_definition)
-    ensure_runtime(config.sdk_repo_name, config.sdk_id, config.sdk_branch)
-    ensure_runtime(config.sdk_repo_name, config.sdk_id + '.Debug',
-                   config.sdk_branch)
-    ensure_runtime(config.sdk_repo_name, config.sdk_id + '.Locale',
-                   config.sdk_branch)
+                config.sdk_repo_name(), config.sdk_repo_definition())
+    ensure_runtime(config.sdk_repo_name(), config.sdk_id(),
+                   config.sdk_branch())
+    ensure_runtime(config.sdk_repo_name(), config.sdk_id() + '.Debug',
+                   config.sdk_branch())
+    ensure_runtime(config.sdk_repo_name(), config.sdk_id() + '.Locale',
+                   config.sdk_branch())
 
 
 def ensure_dev_sdk():
     ext.flatpak('remote-add', '--if-not-exists', '--no-gpg-verify', 'flapjack',
                 _REPO)
-    ensure_runtime('flapjack', config.dev_sdk_id, 'master')
+    ensure_runtime('flapjack', config.dev_sdk_id(), 'master')
 
 
 @register_command('build')
@@ -120,7 +121,7 @@ class List(Command):
 
     def execute(self, args):
         currently_open = state.get_open_modules()
-        for m in config.modules:
+        for m in config.modules():
             print(' {} {}'.format('*' if m in currently_open else ' ', m))
 
 
@@ -141,9 +142,9 @@ class Open(Command):
         module = next(m for m in source_manifest['modules']
                       if m['name'] == args.module)
 
-        git_clone = os.path.join(config.checkoutdir, args.module)
+        git_clone = os.path.join(config.checkoutdir(), args.module)
         if not os.path.exists(git_clone):
-            ext.git(config.checkoutdir, 'clone', module['sources'][0]['url'],
+            ext.git(config.checkoutdir(), 'clone', module['sources'][0]['url'],
                     args.module)
             if 'branch' in module['sources'][0]:
                 ext.git(git_clone, 'checkout', module['sources'][0]['branch'])
@@ -166,8 +167,9 @@ class Run(Command):
 
     def execute(self, args):
         ensure_dev_sdk()
-        opts = (['run', '--devel'] + config.shell_permissions +
-                ['--runtime={}//master'.format(config.dev_sdk_id), args.app] +
+        opts = (['run', '--devel'] + config.shell_permissions() +
+                ['--runtime={}//master'.format(config.dev_sdk_id()),
+                 args.app] +
                 args.options)
         ext.flatpak(*opts, code=True)
         # COMPAT: unpacking two lists supported in py3.5
@@ -179,11 +181,11 @@ class Setup(Command):
 
     def execute(self, args):
         if not os.path.exists(config.upstream_sdk_checkout()):
-            ext.git(config.checkoutdir, 'clone', '--branch',
-                    config.sdk_upstream_branch, config.sdk_upstream)
+            ext.git(config.checkoutdir(), 'clone', '--branch',
+                    config.sdk_upstream_branch(), config.sdk_upstream())
         else:
             ext.git(config.upstream_sdk_checkout(), 'checkout',
-                    config.sdk_upstream_branch)
+                    config.sdk_upstream_branch())
 
         ensure_base_sdk()
 
@@ -195,8 +197,8 @@ class Shell(Command):
     def execute(self, args):
         ensure_dev_sdk()
         opts = (['run', '--devel', '--command=bash',
-                 '--filesystem={}'.format(config.workdir)] +
-                config.shell_permissions + [config.dev_sdk_id])
+                 '--filesystem={}'.format(config.workdir())] +
+                config.shell_permissions() + [config.dev_sdk_id()])
         ext.flatpak(*opts, code=True)
         # COMPAT: unpacking non-final list supported in py3.5
 
@@ -238,8 +240,8 @@ class Update(Command):
         ensure_base_sdk()
 
         there_were_errors = False
-        for entry in os.listdir(config.checkoutdir):
-            git_clone = os.path.join(config.checkoutdir, entry)
+        for entry in os.listdir(config.checkoutdir()):
+            git_clone = os.path.join(config.checkoutdir(), entry)
             if not os.path.isdir(git_clone):
                 continue
             if not os.path.exists(os.path.join(git_clone, '.git')):
