@@ -17,6 +17,7 @@ _DEFAULTS = {
     'sdk_repo_name': 'flapjack-source',
     'sdk_repo_definition': 'https://sdk.gnome.org/gnome-nightly.flatpakrepo',
     'dev_sdk_id': 'org.gnome.dev.Sdk',
+    'dev_tools_manifest': None,
 
     # default modules are from meta-gnome-devel-platform in jhbuild
     'modules': 'glib pango atk at-spi2-core at-spi2-atk gtk3',
@@ -42,7 +43,10 @@ class _Getter:
 
 
 def _string_expandtilde(*args):
-    return os.path.expanduser(_config.get(*args))
+    val = _config.get(*args)
+    if val is not None:
+        return os.path.expanduser(val)
+    return val
 
 
 def _ws_sep_list(*args):
