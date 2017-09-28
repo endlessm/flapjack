@@ -9,7 +9,7 @@ from . import config
 instead of XDG_CACHE_DIR so that you can maintain multiple Flapjack
 checkouts if you are hacking on more than one runtime."""
 
-_FILENAME = os.path.join(config.workdir, 'state.dat')
+_FILENAME = os.path.join(config.workdir(), 'state.dat')
 
 
 class _State:

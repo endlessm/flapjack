@@ -18,7 +18,7 @@ def get_source_manifest():
 
 @functools.lru_cache()
 def get_dev_tools_manifest():
-    if not config.dev_tools_manifest:
+    if not config.dev_tools_manifest():
         return []
-    with open(config.dev_tools_manifest) as f:
+    with open(config.dev_tools_manifest()) as f:
         return json.load(f, object_pairs_hook=collections.OrderedDict)

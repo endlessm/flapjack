@@ -16,9 +16,8 @@ Flatpak-builder.
 It does not require any other Python modules to run.
 For installation, it requires pip or setuptools.
 
-If you want, create a configuration file in
-`~/.config/flapjackconfig.py`.
-Use the [`example.flapjackconfig.py`][1] as a template if you need to.
+If you want, create a configuration file in `~/.config/flapjack.ini`.
+Use the [`example.flapjack.ini`][1] as a template if you need to.
 Out of the box, Flapjack is configured to work on the core platform
 from the GNOME SDK.
 The example file shows how to configure it for the Endless OS apps SDK.
@@ -127,6 +126,6 @@ Even though no modules are open for development, the development SDK
 sandbox will still contain the `jq` tool.
 You can verify this with `flapjack shell`.
 
-[1]: https://github.com/endlessm/flapjack/blob/master/example.flapjackconfig.py
+[1]: https://github.com/endlessm/flapjack/blob/master/example.flapjack.ini
 [2]: http://www.youtube.com/watch?v=70Kl9ft5DGA&t=40m4s
 [3]: https://stedolan.github.io/jq/

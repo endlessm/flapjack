@@ -11,7 +11,7 @@ from . import config, state, util
 
 """Module for running external commands."""
 
-_BUILD = os.path.join(config.workdir, 'runtime-build')
+_BUILD = os.path.join(config.workdir(), 'runtime-build')
 
 
 def git(path, command, *args, output=False, code=False):
@@ -25,10 +25,22 @@ def git(path, command, *args, output=False, code=False):
     subprocess.check_call(cmdline, cwd=path)
 
 
+def _takes_user_arg(command):
+    """Only certain flatpak commands take the --user argument, but we want to
+    ensure it's applied consistently throughout flapjack."""
+    return command in ('install', 'update', 'uninstall', 'list', 'info',
+                       'remote-add', 'remote-modify', 'remote-delete',
+                       'remote-ls', 'remotes', 'make-current')
+
+
 def flatpak(command, *args, output=False, code=False):
     """Run a flatpak command."""
 
-    cmdline = ['flatpak', command] + list(args)
+    user_arg = []
+    if config.user_installation() and _takes_user_arg(command):
+        user_arg = ['--user']
+
+    cmdline = (['flatpak', command] + user_arg + list(args))
     if output:
         return subprocess.check_output(cmdline)
     if code:
@@ -43,14 +55,15 @@ def _generate_manifest():
     # Put any changes here that are necessary to remove stuff that only applies
     # to the original runtime's flatpak-builder manifest
     manifest['separate-locales'] = False
-    manifest['id'] = config.dev_sdk_id
+    manifest['id'] = config.dev_sdk_id()
     manifest.pop('id-platform', None)
-    manifest['branch'] = manifest['runtime-version'] = 'master'
-    manifest['runtime'] = manifest['sdk'] = config.sdk_id
+    manifest['branch'] = 'master'
+    manifest['runtime'] = manifest['sdk'] = config.sdk_id()
+    manifest['runtime-version'] = config.sdk_branch()
     manifest.pop('metadata', None)
     manifest.pop('metadata-platform', None)
-    manifest['sdk-extensions'] = [config.sdk_id + '.Debug',
-                                  config.sdk_id + '.Locale']
+    manifest['sdk-extensions'] = [config.sdk_id() + '.Debug',
+                                  config.sdk_id() + '.Locale']
     manifest.pop('platform-extensions', None)
     manifest.pop('cleanup-platform', None)
     manifest.pop('cleanup-platform-commands', None)
@@ -65,14 +78,14 @@ def _generate_manifest():
     # Make sure to maintain order of modules in the output manifest
     open_modules = [m for m in manifest['modules']
                     if (m['name'] in state.get_open_modules() and
-                        m['name'] in config.modules)]
+                        m['name'] in config.modules())]
     for m in open_modules:
         m['sources'] = [collections.OrderedDict([
             ('type', 'git'),
             ('branch', 'flapjack'),
-            ('url', '{}/{}'.format(config.checkoutdir, m['name'])),
+            ('url', '{}/{}'.format(config.checkoutdir(), m['name'])),
         ])]
-        config_opts = config.extra_module_config_opts.get(m['name'], [])
+        config_opts = config.extra_config_opts(m['name'])
         if config_opts:
             m['config-opts'] = m.get('config-opts', []) + config_opts
 
@@ -121,7 +134,7 @@ def _branch_state(path):
 class _BranchAllModules(contextlib.ExitStack):
     def __enter__(self):
         for module in state.get_open_modules():
-            git_clone = os.path.join(config.checkoutdir, module)
+            git_clone = os.path.join(config.checkoutdir(), module)
             self.enter_context(_branch_state(git_clone))
 
 
@@ -145,7 +158,7 @@ def flatpak_builder(*args, check=None, distcheck=False):
         build_commands.insert(0, testcmd)
 
         build_options = check_module.setdefault('build-options', {})
-        build_options['build-args'] = (config.test_permissions +
+        build_options['build-args'] = (config.test_permissions() +
                                        build_options.get('build-args', []))
 
         try:
@@ -161,4 +174,4 @@ def flatpak_builder(*args, check=None, distcheck=False):
                [_BUILD, config.manifest()])
 
     with _BranchAllModules():
-        return subprocess.call(cmdline, cwd=config.workdir)
+        return subprocess.call(cmdline, cwd=config.workdir())
