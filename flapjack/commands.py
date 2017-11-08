@@ -87,6 +87,7 @@ def ensure_dev_sdk():
     ext.flatpak('remote-add', '--if-not-exists', '--no-gpg-verify', 'flapjack',
                 _REPO)
     ensure_runtime('flapjack', config.dev_sdk_id(), 'master')
+    ensure_runtime('flapjack', config.dev_sdk_id() + '.Debug', 'master')
 
 
 @register_command('build')
