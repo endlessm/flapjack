@@ -85,7 +85,17 @@ def _generate_manifest():
             ('branch', 'flapjack'),
             ('url', '{}/{}'.format(config.checkoutdir(), m['name'])),
         ])]
-        config_opts = config.extra_config_opts(m['name'])
+
+        build_options = m.get('build-options', {})
+        m['build-options'] = build_options
+
+        for flags_key in ('cflags', 'cppflags', 'cxxflags', 'ldflags'):
+            flags = getattr(config, 'module_extra_' + flags_key)(m['name'])
+            if flags:
+                old_flags = build_options.get(flags_key, '')
+                build_options[flags_key] = ' '.join([old_flags, flags])
+
+        config_opts = config.module_extra_config_opts(m['name'])
         if config_opts:
             m['config-opts'] = m.get('config-opts', []) + config_opts
 
