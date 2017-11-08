@@ -65,6 +65,8 @@ def _generate_manifest():
     manifest['sdk-extensions'] = [config.sdk_id() + '.Debug',
                                   config.sdk_id() + '.Locale']
     manifest.pop('platform-extensions', None)
+    manifest.pop('inherit-extensions', None)
+    manifest.pop('add-extensions', None)
     manifest.pop('cleanup-platform', None)
     manifest.pop('cleanup-platform-commands', None)
     build_options = manifest.setdefault('build-options', {})
