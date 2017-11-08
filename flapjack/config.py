@@ -70,6 +70,13 @@ test_permissions = _Getter('test_permissions', _ws_sep_list)
 shell_permissions = _Getter('shell_permissions', _ws_sep_list)
 
 
+def module_url(module):
+    """Returns overridden URL for a module's git repository."""
+    if not _config.has_section(module):
+        return None
+    return _config.get(module, 'url', fallback=None)
+
+
 def extra_config_opts(module):
     """Returns extra configure options from a module-specfic section."""
     if not _config.has_section(module):
