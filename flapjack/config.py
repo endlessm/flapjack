@@ -42,15 +42,15 @@ class _Getter:
         return self.op('Common', self.key)
 
 
-def _string_expandtilde(*args):
-    val = _config.get(*args)
+def _string_expandtilde(*args, **kw):
+    val = _config.get(*args, **kw)
     if val is not None:
         return os.path.expanduser(val)
     return val
 
 
-def _ws_sep_list(*args):
-    return _config.get(*args).split()
+def _ws_sep_list(*args, **kw):
+    return _config.get(*args, **kw).split()
 
 
 workdir = _Getter('workdir', _string_expandtilde)
@@ -70,11 +70,20 @@ test_permissions = _Getter('test_permissions', _ws_sep_list)
 shell_permissions = _Getter('shell_permissions', _ws_sep_list)
 
 
-def extra_config_opts(module):
-    """Returns extra configure options from a module-specfic section."""
-    if not _config.has_section(module):
-        return []
-    return _config.get(module, 'extra_config_opts', fallback='').split()
+class _ModuleGetter(_Getter):
+    """Similar to _Getter but for a module-specific config option."""
+    def __call__(self, module):
+        if not _config.has_section(module):
+            return None
+        return self.op(module, self.key, fallback=None)
+
+
+module_url = _ModuleGetter('url')
+module_extra_cflags = _ModuleGetter('extra_cflags')
+module_extra_cppflags = _ModuleGetter('extra_cppflags')
+module_extra_cxxflags = _ModuleGetter('extra_cxxflags')
+module_extra_ldflags = _ModuleGetter('extra_ldflags')
+module_extra_config_opts = _ModuleGetter('extra_config_opts', _ws_sep_list)
 
 
 def manifest():

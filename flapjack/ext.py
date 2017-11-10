@@ -65,6 +65,8 @@ def _generate_manifest():
     manifest['sdk-extensions'] = [config.sdk_id() + '.Debug',
                                   config.sdk_id() + '.Locale']
     manifest.pop('platform-extensions', None)
+    manifest.pop('inherit-extensions', None)
+    manifest.pop('add-extensions', None)
     manifest.pop('cleanup-platform', None)
     manifest.pop('cleanup-platform-commands', None)
     build_options = manifest.setdefault('build-options', {})
@@ -85,7 +87,17 @@ def _generate_manifest():
             ('branch', 'flapjack'),
             ('url', '{}/{}'.format(config.checkoutdir(), m['name'])),
         ])]
-        config_opts = config.extra_config_opts(m['name'])
+
+        build_options = m.get('build-options', {})
+        m['build-options'] = build_options
+
+        for flags_key in ('cflags', 'cppflags', 'cxxflags', 'ldflags'):
+            flags = getattr(config, 'module_extra_' + flags_key)(m['name'])
+            if flags:
+                old_flags = build_options.get(flags_key, '')
+                build_options[flags_key] = ' '.join([old_flags, flags])
+
+        config_opts = config.module_extra_config_opts(m['name'])
         if config_opts:
             m['config-opts'] = m.get('config-opts', []) + config_opts
 

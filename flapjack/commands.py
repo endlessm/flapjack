@@ -87,6 +87,7 @@ def ensure_dev_sdk():
     ext.flatpak('remote-add', '--if-not-exists', '--no-gpg-verify', 'flapjack',
                 _REPO)
     ensure_runtime('flapjack', config.dev_sdk_id(), 'master')
+    ensure_runtime('flapjack', config.dev_sdk_id() + '.Debug', 'master')
 
 
 @register_command('build')
@@ -144,8 +145,11 @@ class Open(Command):
 
         git_clone = os.path.join(config.checkoutdir(), args.module)
         if not os.path.exists(git_clone):
-            ext.git(config.checkoutdir(), 'clone', module['sources'][0]['url'],
-                    args.module)
+            source = config.module_url(args.module)
+            if source is None:
+                source = module['sources'][0]['url']
+
+            ext.git(config.checkoutdir(), 'clone', source, args.module)
             if 'branch' in module['sources'][0]:
                 ext.git(git_clone, 'checkout', module['sources'][0]['branch'])
         else:
