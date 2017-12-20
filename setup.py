@@ -9,6 +9,7 @@
 import io
 import os
 import sys
+import subprocess
 from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
@@ -82,6 +83,51 @@ class PyTestCommand(TestCommand):
         sys.exit(exitcode)
 
 
+class BuildCompletionsCommand(Command):
+    """Support setup.py build_completions."""
+
+    description = 'Build the completion script'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        builder = os.path.join(here, 'devscripts', 'bashcompletion.py')
+        result = subprocess.run([sys.executable, builder])
+        sys.exit(result.returncode)
+
+
+class InstallCompletionsCommand(Command):
+    """Support setup.py install_completions."""
+
+    description = 'Install the completion script'
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        pkg_config_command = ('pkg-config --variable=completionsdir' +
+                              'bash-completion')
+        bash_completions_dir = subprocess.getoutput(pkg_config_command)
+        if not bash_completions_dir:
+            print('Couldn\'t install completions: No completions dir found.')
+            sys.exit(1)
+
+        completions_file = 'build/flapjack.bash-completion'
+        dest_file = os.path.join(bash_completions_dir, 'flapjack')
+        result = subprocess.run('cp {} {}'.format(completions_file, dest_file),
+                                shell=True)
+        sys.exit(result.returncode)
+
+
 setup(
     name=NAME,
     version=about['__version__'],
@@ -119,5 +165,7 @@ setup(
     cmdclass={
         'publish': PublishCommand,
         'test': PyTestCommand,
+        'build_completions': BuildCompletionsCommand,
+        'install_completions': InstallCompletionsCommand,
     },
 )
