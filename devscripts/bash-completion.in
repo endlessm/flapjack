@@ -1,0 +1,45 @@
+# Check for bash
+[ -z "$BASH_VERSION" ] && return
+
+# Get `flatpak run' completions from flatpak completion script
+_get_flatpak_run_completions() {
+    _completion_loader "flatpak"
+    local completion=$(complete -p "flatpak" 2>/dev/null | awk '{print $(NF-1)}')
+    [[ -n $completion ]] || return 1
+
+    local COMP_LINE="flatpak run "
+    local COMP_POINT=${#COMP_LINE}
+
+    "$completion"
+    printf '%s\n' "${COMPREPLY[@]}" | grep -v '^-'
+}
+
+_flapjack() {
+    COMPREPLY=()
+
+    _get_comp_words_by_ref cur prev
+
+    local help_options="-h --help"
+    local subcommands="%%SUBCOMMANDS%%"
+    local subcommands_module_match="%%SUBCOMMANDS_MODULE_MATCH%%"
+    local subcommands_apps_match="%%SUBCOMMANDS_APPS_MATCH%%"
+    local subcommands_other_match="%%SUBCOMMANDS_OTHER_MATCH%%"
+
+    if [[ ${prev} == "flapjack" && ${COMP_CWORD} == 1 ]]; then
+        COMPREPLY=( $(compgen -W "--version ${help_options} ${subcommands}" -- ${cur}) )
+        return 0
+    elif [[ ${prev} =~ ${subcommands_module_match} ]]; then
+        local modules=`flapjack list`
+        COMPREPLY=( $(compgen -W "${help_options} ${modules}" -- ${cur}) )
+        return 0
+    elif [[ ${prev} =~ ${subcommands_apps_match} ]]; then
+        local apps=`_get_flatpak_run_completions`
+        COMPREPLY=( $(compgen -W "${help_options} ${apps}" -- ${cur}) )
+        return 0
+    elif [[ ${prev} =~ ${subcommands_other_match} ]]; then
+        COMPREPLY=( $(compgen -W "${help_options}" -- ${cur}) )
+        return 0
+    fi
+}
+
+complete -F _flapjack flapjack

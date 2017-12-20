@@ -40,6 +40,30 @@ def get_command(name):
     return _command_registry[name]()
 
 
+def get_all_commands():
+    """Get all commands grouped by their parameter requirements."""
+    commands = {
+        'all': _command_registry.keys(),
+        'requiring module': [],
+        'requiring app': [],
+        'no params': [],
+    }
+    for name in commands['all']:
+        command = get_command(name)
+        action_dests = []
+        for action in command.parser._actions:
+            action_dests.append(action.dest)
+
+        if 'module' in action_dests:
+            commands['requiring module'].append(name)
+        elif 'app' in action_dests:
+            commands['requiring app'].append(name)
+        else:
+            commands['no params'].append(name)
+
+    return commands
+
+
 def get_help_text():
     """One line of each command name and description."""
     retval = ''

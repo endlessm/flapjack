@@ -125,6 +125,34 @@ Even though no modules are open for development, the development SDK
 sandbox will still contain the `jq` tool.
 You can verify this with `flapjack shell`.
 
+## Tab completion ##
+
+### System installation ###
+
+If you prefer a system-wide installation, clone this repository and
+then run:
+
+```
+sudo python setup.py install_completions
+```
+
+### User installation ###
+
+Download the [`flapjack.bash-completion`][4] script.
+
+Then to test out the completion without "installing" it, just source
+the file directly, like so:
+
+```
+source ~/path/to/flapjack.bash-completion
+```
+
+After you do that, tab completion will immediately be made available
+in your current shell. But it won't be available next time you log in.
+
+To install it, add the line above to your `.bashrc`.
+
 [1]: https://github.com/endlessm/flapjack/blob/master/example.flapjack.ini
 [2]: http://www.youtube.com/watch?v=70Kl9ft5DGA&t=40m4s
 [3]: https://stedolan.github.io/jq/
+[4]: https://github.com/endlessm/flapjack/blob/master/build/flapjack.bash-completion
