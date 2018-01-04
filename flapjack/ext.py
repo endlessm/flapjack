@@ -1,4 +1,4 @@
-# Copyright 2017 Endless Mobile, Inc.
+# Copyright 2017, 2018 Endless Mobile, Inc.
 
 import collections
 import contextlib
@@ -161,7 +161,7 @@ def flatpak_builder(*args, check=None, distcheck=False):
     if check:
         check_index, check_module = next(
             (ix, m) for ix, m in enumerate(manifest['modules'])
-            if m['name'] == check)
+            if isinstance(m, dict) and m['name'] == check)
         testcmd = 'make distcheck' if distcheck else 'make check'
         if check_module.get('buildsystem', None) == 'meson':
             testcmd = 'ninja test'
