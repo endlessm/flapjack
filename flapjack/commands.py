@@ -66,10 +66,13 @@ class Command:
         raise NotImplementedError
 
 
-def ensure_runtime(remote, runtime, branch):
+def ensure_runtime(remote, runtime, branch, subpaths=False):
     if ext.flatpak('info', '--show-commit', runtime, branch, code=True) != 0:
         ext.flatpak('install', remote, runtime, branch)
-    ext.flatpak('update', runtime, branch)
+    if subpaths:
+        ext.flatpak('update', '--subpath=', runtime, branch)
+    else:
+        ext.flatpak('update', runtime, branch)
 
 
 def ensure_base_sdk():
@@ -80,7 +83,7 @@ def ensure_base_sdk():
     ensure_runtime(config.sdk_repo_name(), config.sdk_id() + '.Debug',
                    config.sdk_branch())
     ensure_runtime(config.sdk_repo_name(), config.sdk_id() + '.Locale',
-                   config.sdk_branch())
+                   config.sdk_branch(), subpaths=True)
 
 
 def ensure_dev_sdk():
