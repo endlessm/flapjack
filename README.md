@@ -98,10 +98,9 @@ of the base SDK and do a `git fetch` in all of your checkouts.
 You can also include extra developer tools in your development SDK.
 As an example, here's how to include the [`jq`][3] utility.
 
-Add this to your `~/.config/flapjackconfig.py` configuration file:
-```python
-import os.path
-dev_tools_manifest = os.path.join(workdir, 'devtools.json')
+Add this to your `~/.config/flapjack.ini` configuration file:
+```
+dev_tools_manifest = ${workdir}/devtools.json
 ```
 
 Then, create a file in `~/flapjack/devtools.json` with the following
