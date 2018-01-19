@@ -50,7 +50,10 @@ def _string_expandtilde(*args, **kw):
 
 
 def _ws_sep_list(*args, **kw):
-    return _config.get(*args, **kw).split()
+    val = _config.get(*args, **kw)
+    if val is not None:
+        return val.split()
+    return []
 
 
 workdir = _Getter('workdir', _string_expandtilde)
@@ -84,6 +87,11 @@ module_extra_cppflags = _ModuleGetter('extra_cppflags')
 module_extra_cxxflags = _ModuleGetter('extra_cxxflags')
 module_extra_ldflags = _ModuleGetter('extra_ldflags')
 module_extra_config_opts = _ModuleGetter('extra_config_opts', _ws_sep_list)
+module_extra_build_args = _ModuleGetter('extra_build_args', _ws_sep_list)
+module_extra_make_args = _ModuleGetter('extra_make_args', _ws_sep_list)
+module_extra_test_args = _ModuleGetter('extra_test_args', _ws_sep_list)
+module_extra_make_install_args = _ModuleGetter('extra_make_install_args',
+                                               _ws_sep_list)
 
 
 def manifest():

@@ -97,6 +97,14 @@ def _generate_manifest():
                 old_flags = build_options.get(flags_key, '')
                 build_options[flags_key] = ' '.join([old_flags, flags])
 
+        for args_key in ('build-args', 'make-args', 'test-args',
+                         'make-install-args'):
+            config_key = 'module_extra_' + args_key.replace('-', '_')
+            args = getattr(config, config_key)(m['name'])
+            if args:
+                old_args = build_options.get(args_key, [])
+                build_options[args_key] = old_args + args
+
         config_opts = config.module_extra_config_opts(m['name'])
         if config_opts:
             m['config-opts'] = m.get('config-opts', []) + config_opts
