@@ -16,6 +16,13 @@ get more complicated, consider putting them in their own module.)"""
 _command_registry = {}
 _REPO = os.path.join(config.workdir(), 'repo')
 
+_NON_GIT_SOURCE_MESSAGE = """
+Only sources of type "git" are currently supported. You can override this
+module with a git repository by setting a key in your config file:
+[{module}]
+url = ...
+"""
+
 
 def register_command(name):
     """Decorator for use with command classes, makes the command available to
@@ -98,7 +105,8 @@ class Build(Command):
     """Build a development flatpak runtime"""
 
     def execute(self, args):
-        exitcode = ext.flatpak_builder('--require-changes', '--repo', _REPO)
+        exitcode = ext.flatpak_builder('--require-changes', '--repo', _REPO,
+                                       '--disable-rofiles-fuse')
         if exitcode != 0:
             return exitcode
 
@@ -150,6 +158,9 @@ class Open(Command):
         if not os.path.exists(git_clone):
             source = config.module_url(args.module)
             if source is None:
+                if module['sources'][0]['type'] != 'git':
+                    print(_NON_GIT_SOURCE_MESSAGE.format(module=args.module))
+                    return 1
                 source = module['sources'][0]['url']
 
             ext.git(config.checkoutdir(), 'clone', source, args.module)
