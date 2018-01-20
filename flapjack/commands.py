@@ -105,7 +105,8 @@ class Build(Command):
     """Build a development flatpak runtime"""
 
     def execute(self, args):
-        exitcode = ext.flatpak_builder('--require-changes', '--repo', _REPO)
+        exitcode = ext.flatpak_builder('--require-changes', '--repo', _REPO,
+                                       '--disable-rofiles-fuse')
         if exitcode != 0:
             return exitcode
 
