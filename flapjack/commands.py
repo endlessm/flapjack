@@ -242,7 +242,7 @@ class Test(Command):
                   '"flapjack open"')
             return 1
 
-        options = ['--build-only', '--keep-build-dirs']
+        options = ['--build-only']
         if args.shell:
             options += ['--build-shell={}'.format(args.module)]
 
