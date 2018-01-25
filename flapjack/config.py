@@ -2,6 +2,7 @@
 
 import configparser
 import os.path
+import shlex
 
 _CONFIG_FILE = os.path.expanduser('~/.config/flapjack.ini')
 _DEFAULTS = {
@@ -62,6 +63,13 @@ def _ws_sep_list(*args, **kw):
     return []
 
 
+def _shell_list(*args, **kw):
+    val = _config.get(*args, **kw)
+    if val is not None:
+        return shlex.split(val)
+    return []
+
+
 workdir = _Getter('workdir', _string_expandtilde)
 checkoutdir = _Getter('checkoutdir', _string_expandtilde)
 user_installation = _Getter('user_installation', _config.getboolean)
@@ -92,12 +100,12 @@ module_extra_cflags = _ModuleGetter('extra_cflags')
 module_extra_cppflags = _ModuleGetter('extra_cppflags')
 module_extra_cxxflags = _ModuleGetter('extra_cxxflags')
 module_extra_ldflags = _ModuleGetter('extra_ldflags')
-module_extra_config_opts = _ModuleGetter('extra_config_opts', _ws_sep_list)
-module_extra_build_args = _ModuleGetter('extra_build_args', _ws_sep_list)
-module_extra_make_args = _ModuleGetter('extra_make_args', _ws_sep_list)
-module_extra_test_args = _ModuleGetter('extra_test_args', _ws_sep_list)
+module_extra_config_opts = _ModuleGetter('extra_config_opts', _shell_list)
+module_extra_build_args = _ModuleGetter('extra_build_args', _shell_list)
+module_extra_make_args = _ModuleGetter('extra_make_args', _shell_list)
+module_extra_test_args = _ModuleGetter('extra_test_args', _shell_list)
 module_extra_make_install_args = _ModuleGetter('extra_make_install_args',
-                                               _ws_sep_list)
+                                               _shell_list)
 
 
 def module_extra_env(module):
