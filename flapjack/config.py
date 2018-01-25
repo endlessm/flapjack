@@ -5,31 +5,34 @@ import os.path
 
 _CONFIG_FILE = os.path.expanduser('~/.config/flapjack.ini')
 _DEFAULTS = {
-    'workdir': '~/flapjack',
-    'checkoutdir': '${workdir}/checkout',
-    'user_installation': 'no',
+    'Common': {
+        'workdir': '~/flapjack',
+        'checkoutdir': '${workdir}/checkout',
+        'user_installation': 'no',
 
-    'sdk_upstream': 'git://git.gnome.org/gnome-sdk-images',
-    'sdk_upstream_branch': 'master',
-    'sdk_id': 'org.gnome.Sdk',
-    'sdk_branch': 'master',
-    'sdk_manifest_json': '${sdk_id}.json.in',
-    'sdk_repo_name': 'flapjack-source',
-    'sdk_repo_definition': 'https://sdk.gnome.org/gnome-nightly.flatpakrepo',
-    'dev_sdk_id': 'org.gnome.dev.Sdk',
-    'dev_tools_manifest': None,
+        'sdk_upstream': 'git://git.gnome.org/gnome-sdk-images',
+        'sdk_upstream_branch': 'master',
+        'sdk_id': 'org.gnome.Sdk',
+        'sdk_branch': 'master',
+        'sdk_manifest_json': '${sdk_id}.json.in',
+        'sdk_repo_name': 'flapjack-source',
+        'sdk_repo_definition':
+            'https://sdk.gnome.org/gnome-nightly.flatpakrepo',
+        'dev_sdk_id': 'org.gnome.dev.Sdk',
 
-    # default modules are from meta-gnome-devel-platform in jhbuild
-    'modules': 'glib pango atk at-spi2-core at-spi2-atk gtk3',
+        # default modules are from meta-gnome-devel-platform in jhbuild
+        'modules': 'glib pango atk at-spi2-core at-spi2-atk gtk3',
+    },
 }
 
 _interp = configparser.ExtendedInterpolation()
-_config = configparser.ConfigParser(defaults=_DEFAULTS, interpolation=_interp)
+_config = configparser.ConfigParser(interpolation=_interp)
+_config.read_dict(_DEFAULTS)
 try:
     with open(_CONFIG_FILE) as f:
         _config.read_file(f, source=_CONFIG_FILE)
 except FileNotFoundError:
-    _config.add_section('Common')  # no config file, use all defaults
+    pass  # no config file, use all defaults
 
 
 class _Getter:
@@ -39,7 +42,7 @@ class _Getter:
         self.op = op
 
     def __call__(self):
-        return self.op('Common', self.key)
+        return self.op('Common', self.key, fallback=None)
 
 
 def _string_expandtilde(*args, **kw):
