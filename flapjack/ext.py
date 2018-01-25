@@ -105,6 +105,11 @@ def _generate_manifest():
                 old_args = build_options.get(args_key, [])
                 build_options[args_key] = old_args + args
 
+        config_env = config.module_extra_env(m['name'])
+        if config_env:
+            build_options.setdefault('env', {})
+            build_options['env'].update(config_env)
+
         config_opts = config.module_extra_config_opts(m['name'])
         if config_opts:
             m['config-opts'] = m.get('config-opts', []) + config_opts

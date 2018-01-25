@@ -27,6 +27,9 @@ _DEFAULTS = {
 
 _interp = configparser.ExtendedInterpolation()
 _config = configparser.ConfigParser(interpolation=_interp)
+# Default is case-insensitive keys, we need case-sensitive for the environment
+# variable sections
+_config.optionxform = lambda option: option
 _config.read_dict(_DEFAULTS)
 try:
     with open(_CONFIG_FILE) as f:
@@ -95,6 +98,16 @@ module_extra_make_args = _ModuleGetter('extra_make_args', _ws_sep_list)
 module_extra_test_args = _ModuleGetter('extra_test_args', _ws_sep_list)
 module_extra_make_install_args = _ModuleGetter('extra_make_install_args',
                                                _ws_sep_list)
+
+
+def module_extra_env(module):
+    """Returns a dictionary of environment variables to add to the build
+    environment for a specific module, specified by a [$MODULE.extra_env]
+    section in the config file."""
+    section = module + '.extra_env'
+    if not _config.has_section(section):
+        return None
+    return {key: value for key, value in _config.items(section)}
 
 
 def manifest():
