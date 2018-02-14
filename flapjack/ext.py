@@ -195,7 +195,7 @@ def flatpak_builder(*args, check=None, distcheck=False):
     with open(config.manifest(), 'w') as f:
         json.dump(manifest, f, indent=4)
 
-    cmdline = (['flatpak-builder', '--force-clean', '--disable-rofiles-fuse'] +
+    cmdline = (['flatpak-builder', '--force-clean'] +
                list(args) + stop_arg + [_BUILD, config.manifest()])
 
     with _BranchAllModules():
