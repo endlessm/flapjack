@@ -214,6 +214,7 @@ class Shell(Command):
     def execute(self, args):
         ensure_dev_sdk()
         opts = (['run', '--devel', '--command=bash',
+                 '--env=PS1={}{}'.format(config.shell_prefix(), ext.get_ps1()),
                  '--filesystem={}'.format(config.workdir())] +
                 config.shell_permissions() + [config.dev_sdk_id()])
         ext.flatpak(*opts, code=True)

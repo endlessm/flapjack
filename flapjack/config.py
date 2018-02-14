@@ -9,6 +9,7 @@ _DEFAULTS = {
     'Common': {
         'workdir': '~/flapjack',
         'checkoutdir': '${workdir}/checkout',
+        'shell_prefix': '(flapjack) ',
         'user_installation': 'no',
 
         'sdk_upstream': 'git://git.gnome.org/gnome-sdk-images',
@@ -72,6 +73,7 @@ def _shell_list(*args, **kw):
 
 workdir = _Getter('workdir', _string_expandtilde)
 checkoutdir = _Getter('checkoutdir', _string_expandtilde)
+shell_prefix = _Getter('shell_prefix')
 user_installation = _Getter('user_installation', _config.getboolean)
 sdk_upstream = _Getter('sdk_upstream')
 sdk_upstream_branch = _Getter('sdk_upstream_branch')
