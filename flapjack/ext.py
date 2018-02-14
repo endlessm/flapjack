@@ -110,9 +110,16 @@ def _generate_manifest():
             build_options.setdefault('env', {})
             build_options['env'].update(config_env)
 
-        config_opts = config.module_extra_config_opts(m['name'])
-        if config_opts:
-            m['config-opts'] = m.get('config-opts', []) + config_opts
+        extra_config_opts = config.module_extra_config_opts(m['name'])
+        if extra_config_opts:
+            # There are two ways to specify config-opts in the manifest, we
+            # need to combine both of them with our extra config-opts, and
+            # make sure ours come last
+            bare_config_opts = m.get('config-opts', [])
+            build_options_config_opts = build_options.get('config-opts', [])
+            build_options['config-opts'] = (build_options_config_opts +
+                                            bare_config_opts +
+                                            extra_config_opts)
 
     manifest['modules'] = util.get_dev_tools_manifest() + open_modules
 
@@ -195,7 +202,7 @@ def flatpak_builder(*args, check=None, distcheck=False):
     with open(config.manifest(), 'w') as f:
         json.dump(manifest, f, indent=4)
 
-    cmdline = (['flatpak-builder', '--force-clean', '--disable-rofiles-fuse'] +
+    cmdline = (['flatpak-builder', '--force-clean'] +
                list(args) + stop_arg + [_BUILD, config.manifest()])
 
     with _BranchAllModules():
