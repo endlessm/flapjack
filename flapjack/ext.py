@@ -4,7 +4,7 @@ import collections
 import contextlib
 import copy
 import json
-import os.path
+import os
 import subprocess
 
 from . import config, state, util
@@ -200,3 +200,21 @@ def flatpak_builder(*args, check=None, distcheck=False):
 
     with _BranchAllModules():
         return subprocess.call(cmdline, cwd=config.workdir())
+
+
+def get_ps1():
+    """Try to obtain the value of the $PS1 variable from the environment
+    or from the parent shell.  Fallback to a simple prompt if not
+    found.
+    """
+
+    if 'PS1' in os.environ:
+        return os.environ['PS1']
+
+    shell = os.environ.get('SHELL')
+    # The following command is known to work at least in bash and zsh:
+    if shell and os.path.basename(shell) in ['bash', 'zsh']:
+        ps1 = subprocess.check_output([shell, '-i', '-c', 'echo $PS1'])
+        ps1 = ps1.decode().replace('\n', ' ')
+        return ps1
+    return "$ "
