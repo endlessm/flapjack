@@ -1,3 +1,12 @@
+Version 0.1.1
+=============
+
+- Uses rofiles once again when building, since building without it made
+  things a lot slower. If you have problems with the "Read-only
+  filesystem" error, use `ensure-writable` in your manifest.
+- Fixed `config-opts` not getting added in the right order.
+- Fixed some mistakes in the example config file.
+
 Version 0.1.0
 =============
 
