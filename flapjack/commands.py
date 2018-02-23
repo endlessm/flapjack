@@ -213,10 +213,25 @@ class Shell(Command):
 
     def execute(self, args):
         ensure_dev_sdk()
+
+        env_vars = {
+            # This will be used as $PS1 if the users don't have a
+            # custom $PS1 in their .bashrc
+            'PS1': "[($FLAPJACK_PROMPT_PREFIX) \\u@\\h \\W]\\$ ",
+
+            # If the users do have a custom $PS1, it will override the
+            # previous setting.  So we export this environment
+            # variable that they can add to their custom $PS1.
+            'FLAPJACK_PROMPT_PREFIX': config.shell_prefix(),
+        }
+
+        env_vars_list = list("--env={}={}".format(_key, val)
+                             for _key, val in env_vars.items())
+
         opts = (['run', '--devel', '--command=bash',
-                 '--env=PS1={}{}'.format(config.shell_prefix(), ext.get_ps1()),
                  '--filesystem={}'.format(config.workdir())] +
-                config.shell_permissions() + [config.dev_sdk_id()])
+                config.shell_permissions() + env_vars_list +
+                [config.dev_sdk_id()])
         ext.flatpak(*opts, code=True)
         # COMPAT: unpacking non-final list supported in py3.5
 

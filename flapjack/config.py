@@ -9,7 +9,7 @@ _DEFAULTS = {
     'Common': {
         'workdir': '~/flapjack',
         'checkoutdir': '${workdir}/checkout',
-        'shell_prefix': '(flapjack) ',
+        'shell_prefix': 'flapjack',
         'user_installation': 'no',
 
         'sdk_upstream': 'git://git.gnome.org/gnome-sdk-images',
