@@ -143,7 +143,12 @@ setup(
     },
 
     install_requires=[],
-    tests_require=['pytest==3.0.6', 'pytest-flake8==0.8.1', 'flake8==3.2.0'],
+    tests_require=[
+        'pytest==3.0.6',
+        'pytest-flake8==0.8.1',
+        'flake8==3.2.0',
+        'pyflakes==1.3.0',
+    ],
     include_package_data=True,
     license='ISC',
     classifiers=[
