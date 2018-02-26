@@ -118,10 +118,10 @@ class InstallCompletionsCommand(Command):
                               'bash-completion')
         bash_completions_dir = subprocess.getoutput(pkg_config_command)
         if not bash_completions_dir:
-            print("Couldn't install completions: No completions dir found.")
+            print('Couldn\'t install completions: No completions dir found.')
             sys.exit(1)
 
-        completions_file = "build/flapjack.bash-completion"
+        completions_file = 'build/flapjack.bash-completion'
         dest_file = os.path.join(bash_completions_dir, 'flapjack')
         result = subprocess.run('cp {} {}'.format(completions_file, dest_file),
                                 shell=True)

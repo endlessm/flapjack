@@ -10,9 +10,9 @@ sys.path.insert(0, os.path.join(here, '..'))
 from flapjack import commands  # noqa
 
 
-BASH_COMPLETION_TEMPLATE = os.path.join(here, "bash-completion.in")
+BASH_COMPLETION_TEMPLATE = os.path.join(here, 'bash-completion.in')
 BASH_COMPLETION_FILE = os.path.join(here, '..', 'build',
-                                    "flapjack.bash-completion")
+                                    'flapjack.bash-completion')
 
 
 def get_command_vars():
