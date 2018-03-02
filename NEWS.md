@@ -1,3 +1,16 @@
+Version 0.1.2
+=============
+
+- Add support for changing the shell prompt when inside a Flapjack
+  shell. Customize the prefix with `shell_prefix` in your config file.
+  If you already have a custom prompt, include `$FLAPJACK_PROMPT_PREFIX`
+  in your `$PS1` variable.
+  Thanks to Manuel Quiñones for this feature 🥞!
+- Add support for autocompleting commands. Follow the instructions in
+  the README to activate this. Thanks to Manuel Quiñones for this
+  feature too!
+- Fixed a thing in the example config file.
+
 Version 0.1.1
 =============
 
