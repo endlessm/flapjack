@@ -190,7 +190,11 @@ class Open(Command):
             if 'branch' in module['sources'][0]:
                 ext.git(git_clone, 'checkout', module['sources'][0]['branch'])
         else:
-            ext.git(git_clone, 'fetch')
+            try:
+                ext.git(git_clone, 'fetch')
+            except subprocess.CalledProcessError:
+                # Don't error if offline
+                pass
 
         currently_open += [args.module]
         state.set_open_modules(currently_open)

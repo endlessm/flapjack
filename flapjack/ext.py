@@ -66,7 +66,6 @@ def _generate_manifest():
                                   config.sdk_id() + '.Locale']
     manifest.pop('platform-extensions', None)
     manifest.pop('inherit-extensions', None)
-    manifest.pop('add-extensions', None)
     manifest.pop('cleanup-platform', None)
     manifest.pop('cleanup-platform-commands', None)
     build_options = manifest.setdefault('build-options', {})
@@ -76,6 +75,23 @@ def _generate_manifest():
         [arg for arg in manifest.setdefault('finish-args', [])
          if (not arg.startswith('--sdk') and
              not arg.startswith('--runtime'))]
+
+    add_extensions = {}
+    for ext in config.add_extensions():
+        ext_id, mount_point = ext.split(':', 1)
+        branch = None
+        if '/' in ext_id:
+            ext_id, _, branch = ext_id.split('/', 2)
+        add_extensions[ext_id] = {
+            'directory': mount_point,
+            'bundle': False,
+        }
+        if branch is not None:
+            add_extensions[ext_id]['version'] = branch
+
+        manifest['sdk-extensions'].append(ext_id)
+
+    manifest['add-extensions'] = add_extensions
 
     # Make sure to maintain order of modules in the output manifest
     open_modules = [m for m in manifest['modules']

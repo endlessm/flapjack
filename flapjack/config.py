@@ -21,6 +21,7 @@ _DEFAULTS = {
         'sdk_repo_definition':
             'https://sdk.gnome.org/gnome-nightly.flatpakrepo',
         'dev_sdk_id': 'org.gnome.dev.Sdk',
+        'add_extensions': 'org.gnome.Sdk.Docs:share/runtime/docs',
 
         # default modules are from meta-gnome-devel-platform in jhbuild
         'modules': 'glib pango atk at-spi2-core at-spi2-atk gtk3',
@@ -87,6 +88,7 @@ dev_tools_manifest = _Getter('dev_tools_manifest', _string_expandtilde)
 modules = _Getter('modules', _ws_sep_list)
 test_permissions = _Getter('test_permissions', _ws_sep_list)
 shell_permissions = _Getter('shell_permissions', _ws_sep_list)
+add_extensions = _Getter('add_extensions', _ws_sep_list)
 
 
 class _ModuleGetter(_Getter):
