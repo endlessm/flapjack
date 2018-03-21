@@ -1,3 +1,11 @@
+Version 0.1.3
+=============
+
+- Added a `add_extensions` config key which should solve some of the
+  problems around building with gtk-doc enabled.
+- `flapjack open` now works even if you don't have an internet
+  connection.
+
 Version 0.1.2
 =============
 
