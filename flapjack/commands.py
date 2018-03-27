@@ -98,8 +98,30 @@ class Command:
         raise NotImplementedError
 
 
+def find_remote_for_runtime(runtime, branch):
+    """Search for the runtime in all configured remotes. Expensive check."""
+    remotes_list = ext.flatpak('remotes', output=True).split('\n')[1:-1]
+    remotes = [line.split(' ', 1)[0] for line in remotes_list if line]
+    for candidate_remote in remotes:
+        runtimes_list = ext.flatpak('remote-ls', candidate_remote, '--runtime',
+                                    '-d', output=True)
+        runtimes_list = runtimes_list.split('\n')[1:]
+        for line in runtimes_list:
+            if not line:
+                continue
+            quad = line.split(' ', 1)[0]
+            candidate_id, _, candidate_branch = quad.split('/')[1:]
+            if candidate_id == runtime and candidate_branch == branch:
+                return candidate_remote
+
+    raise RuntimeError('{} not found in any remotes: I checked {}'.format(
+        runtime, ', '.join(remotes)))
+
+
 def ensure_runtime(remote, runtime, branch, subpaths=False):
     if ext.flatpak('info', '--show-commit', runtime, branch, code=True) != 0:
+        if remote is None:
+            remote = find_remote_for_runtime(runtime, branch)
         ext.flatpak('install', remote, runtime, branch)
     if subpaths:
         ext.flatpak('update', '--subpath=', runtime, branch)
@@ -123,6 +145,18 @@ def ensure_dev_sdk():
                 _REPO)
     ensure_runtime('flapjack', config.dev_sdk_id(), 'master')
     ensure_runtime('flapjack', config.dev_sdk_id() + '.Debug', 'master')
+
+
+def ensure_add_extensions():
+    """Examines the add_extensions config key, and the manifest's add-extensions
+    key, and attempts to install any extensions mentioned there. Looks through
+    all the configured remotes."""
+    for add_extension in config.add_extensions():
+        ext_id = add_extension.split(':', 1)[0]
+        branch = None
+        if '/' in ext_id:
+            ext_id, _, branch = ext_id.split('/', 2)
+        ensure_runtime(None, ext_id, 'master' if branch is None else branch)
 
 
 @register_command('build')
@@ -233,6 +267,7 @@ class Setup(Command):
                     config.sdk_upstream_branch())
 
         ensure_base_sdk()
+        ensure_add_extensions()
 
 
 @register_command('shell')
