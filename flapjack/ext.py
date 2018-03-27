@@ -41,7 +41,7 @@ def flatpak(command, *args, output=False, code=False):
     if config.user_installation() and _takes_user_arg(command):
         user_arg = ['--user']
 
-    cmdline = (['flatpak', command] + user_arg + list(args))
+    cmdline = ['flatpak', command] + user_arg + list(args)
     if output:
         return subprocess.check_output(cmdline, universal_newlines=True)
     if code:
