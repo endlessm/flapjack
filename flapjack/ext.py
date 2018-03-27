@@ -19,7 +19,8 @@ def git(path, command, *args, output=False, code=False):
 
     cmdline = ['git', command] + list(args)
     if output:
-        return subprocess.check_output(cmdline, cwd=path)
+        return subprocess.check_output(cmdline, cwd=path,
+                                       universal_newlines=True)
     if code:
         return subprocess.call(cmdline, cwd=path)
     subprocess.check_call(cmdline, cwd=path)
@@ -42,7 +43,7 @@ def flatpak(command, *args, output=False, code=False):
 
     cmdline = (['flatpak', command] + user_arg + list(args))
     if output:
-        return subprocess.check_output(cmdline)
+        return subprocess.check_output(cmdline, universal_newlines=True)
     if code:
         return subprocess.call(cmdline)
     subprocess.check_call(cmdline)
@@ -162,7 +163,7 @@ def _branch_state(path):
                            'before building.'.format(path))
 
     rev = git(path, 'rev-parse', '--abbrev-ref', 'HEAD', output=True)
-    rev = rev.decode().strip()
+    rev = rev.strip()
 
     git(path, 'checkout', '-B', 'flapjack')
 
