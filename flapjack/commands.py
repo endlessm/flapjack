@@ -4,6 +4,7 @@ import argparse
 import operator
 import os
 import os.path
+import shutil
 import subprocess
 import sys
 
@@ -318,3 +319,14 @@ class Update(Command):
         if there_were_errors:
             print('Some repositories failed to update.')
             return 1
+
+
+@register_command('clean-cache')
+class CleanCache(Command):
+    """Clean the flatpak-builder cache"""
+
+    def execute(self, args):
+        cache_dir = os.path.join(config.workdir(), '.flatpak-builder')
+        if os.path.isdir(cache_dir):
+            shutil.rmtree(cache_dir, ignore_errors=True)
+        return 0
