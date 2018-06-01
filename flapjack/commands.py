@@ -70,7 +70,7 @@ def get_help_text():
     retval = ''
     for cmd, klass in sorted(list(_command_registry.items()),
                              key=operator.itemgetter(0)):
-        retval += '  {:10} {}\n'.format(cmd, klass.__doc__)
+        retval += '  {:12} {}\n'.format(cmd, klass.__doc__)
     return retval
 
 
