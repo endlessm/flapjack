@@ -212,7 +212,6 @@ class Run(Command):
                                  help='Command-line options to pass to app')
 
     def execute(self, args):
-        ensure_dev_sdk()
         opts = (['run', '--devel'] + config.shell_permissions() +
                 ['--runtime={}//master'.format(config.dev_sdk_id()),
                  args.app] +
@@ -241,8 +240,6 @@ class Shell(Command):
     """Open a shell in the development runtime's sandbox"""
 
     def execute(self, args):
-        ensure_dev_sdk()
-
         env_vars = {
             # This will be used as $PS1 if the users don't have a
             # custom $PS1 in their .bashrc
