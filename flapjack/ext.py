@@ -198,12 +198,15 @@ def flatpak_builder(*args, check=None, distcheck=False):
         check_index, check_module = next(
             (ix, m) for ix, m in enumerate(manifest['modules'])
             if isinstance(m, dict) and m['name'] == check)
-        testcmd = 'make distcheck' if distcheck else 'make check'
+        testcmds = ['make distcheck'] if distcheck else ['make check']
         if check_module.get('buildsystem', None) == 'meson':
-            testcmd = 'ninja test'
+            testcmds = ['ninja test']
+        override_testcmds = check_module.get('test-commands', None)
+        if override_testcmds is not None:
+            testcmds = override_testcmds
 
         build_commands = check_module.setdefault('build-commands', [])
-        build_commands.insert(0, testcmd)
+        build_commands[0:0] = testcmds
 
         build_options = check_module.setdefault('build-options', {})
         build_options['build-args'] = (config.test_permissions() +
