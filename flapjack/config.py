@@ -41,9 +41,14 @@ except FileNotFoundError:
     pass  # no config file, use all defaults
 
 
+def _default_op(*args, **kw):
+    val = _config.get(*args, **kw)
+    return val.strip() if val is not None else None
+
+
 class _Getter:
     """Helper to reduce tedium of defining a getter for every config option."""
-    def __init__(self, key, op=_config.get):
+    def __init__(self, key, op=_default_op):
         self.key = key
         self.op = op
 
