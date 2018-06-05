@@ -1,3 +1,19 @@
+Version 0.1.4
+=============
+
+- Added a new command, `flapjack clean-cache`, which deletes the
+  flatpak-builder cache.
+  Thanks to Emmanuele Bassi for this feature 🥞!
+- Now, `flapjack run` and `flapjack shell` don't update the runtimes,
+  since this is largely redundant due to updating at the end of a run
+  of `flapjack build`.
+- Fixed a bug whereby modules' `test-commands` keys were ignored.
+- Now, extensions listed in the `add_extensions` config key are
+  installed during `flapjack setup`.
+  This should fix errors about missing extensions.
+- Whitespace is now stripped from config file keys.
+- Made some changes to the example config file.
+
 Version 0.1.3
 =============
 
