@@ -17,10 +17,14 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--version', action='version',
                         version='%(prog)s {}'.format(__version__.__version__))
+    parser.add_argument('--verbose', '-v', action='count')
     parser.add_argument('command', help='Subcommand to run')
     parser.add_argument('options', nargs=argparse.REMAINDER,
                         help='Options for subcommand')
     args = parser.parse_args()
+
+    if args.verbose:
+        commands.set_verbose(args.verbose)
 
     try:
         command = commands.get_command(args.command)

@@ -25,6 +25,10 @@ url = ...
 """
 
 
+def set_verbose(level):
+    ext.verbose_level = level
+
+
 def register_command(name):
     """Decorator for use with command classes, makes the command available to
     flapjack's CLI and help text."""
