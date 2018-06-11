@@ -13,11 +13,20 @@ from . import config, state, util
 
 _BUILD = os.path.join(config.workdir(), 'runtime-build')
 
+verbose_level = 0
+
+
+def print_cmd(cmdline):
+    if verbose_level:
+        print('FJ:' + ' '.join(cmdline))
+
 
 def git(path, command, *args, output=False, code=False):
     """Run a git command in the git clone specified by `path`."""
 
     cmdline = ['git', command] + list(args)
+    print_cmd(cmdline)
+
     if output:
         return subprocess.check_output(cmdline, cwd=path,
                                        universal_newlines=True)
@@ -42,6 +51,8 @@ def flatpak(command, *args, output=False, code=False):
         user_arg = ['--user']
 
     cmdline = ['flatpak', command] + user_arg + list(args)
+    print_cmd(cmdline)
+
     if output:
         return subprocess.check_output(cmdline, universal_newlines=True)
     if code:
@@ -222,8 +233,13 @@ def flatpak_builder(*args, check=None, distcheck=False):
     with open(config.manifest(), 'w') as f:
         json.dump(manifest, f, indent=4)
 
-    cmdline = (['flatpak-builder', '--force-clean'] +
+    verbose = []
+    if verbose_level > 1:
+        verbose = ['--verbose']
+
+    cmdline = (['flatpak-builder', '--force-clean'] + verbose +
                list(args) + stop_arg + [_BUILD, config.manifest()])
+    print_cmd(cmdline)
 
     with _BranchAllModules():
         return subprocess.call(cmdline, cwd=config.workdir())
