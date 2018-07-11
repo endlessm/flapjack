@@ -26,7 +26,7 @@ _flapjack() {
     local subcommands_other_match="build|list|setup|shell|update"
 
     if [[ ${prev} == "flapjack" && ${COMP_CWORD} == 1 ]]; then
-        COMPREPLY=( $(compgen -W "--version ${help_options} ${subcommands}" -- ${cur}) )
+        COMPREPLY=( $(compgen -W "--version -v -vv --verbose ${help_options} ${subcommands}" -- ${cur}) )
         return 0
     elif [[ ${prev} =~ ${subcommands_module_match} ]]; then
         local modules=`flapjack list`
