@@ -1,10 +1,9 @@
 # Copyright 2017 Endless Mobile, Inc.
 
 import configparser
-import os.path
+import os
 import shlex
 
-_CONFIG_FILE = os.path.expanduser('~/.config/flapjack.ini')
 _DEFAULTS = {
     'Common': {
         'workdir': '~/flapjack',
@@ -34,9 +33,18 @@ _config = configparser.ConfigParser(interpolation=_interp)
 # variable sections
 _config.optionxform = lambda option: option
 _config.read_dict(_DEFAULTS)
+
+
+def _get_config_file():
+    if os.environ.get('FLAPJACK_CONFIG'):
+        return os.path.expanduser(os.environ['FLAPJACK_CONFIG'])
+    return os.path.expanduser('~/.config/flapjack.ini')
+
+
 try:
-    with open(_CONFIG_FILE) as f:
-        _config.read_file(f, source=_CONFIG_FILE)
+    config_file = _get_config_file()
+    with open(config_file) as f:
+        _config.read_file(f, source=config_file)
 except FileNotFoundError:
     pass  # no config file, use all defaults
 
