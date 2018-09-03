@@ -11,7 +11,7 @@ _DEFAULTS = {
         'shell_prefix': 'flapjack',
         'user_installation': 'no',
 
-        'sdk_upstream': 'git://git.gnome.org/gnome-sdk-images',
+        'sdk_upstream': 'https://gitlab.gnome.org/GNOME/gnome-sdk-images.git',
         'sdk_upstream_branch': 'master',
         'sdk_id': 'org.gnome.Sdk',
         'sdk_branch': 'master',
