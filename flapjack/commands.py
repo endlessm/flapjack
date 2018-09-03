@@ -105,7 +105,7 @@ class Command:
 def find_remote_for_runtime(runtime, branch):
     """Search for the runtime in all configured remotes. Expensive check."""
     remotes_list = ext.flatpak('remotes', output=True).split('\n')[1:-1]
-    remotes = [line.split(' ', 1)[0] for line in remotes_list if line]
+    remotes = [line.split(maxsplit=1)[0] for line in remotes_list if line]
     for candidate_remote in remotes:
         runtimes_list = ext.flatpak('remote-ls', candidate_remote, '--runtime',
                                     '-d', output=True)
