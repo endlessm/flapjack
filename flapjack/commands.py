@@ -113,7 +113,7 @@ def find_remote_for_runtime(runtime, branch):
         for line in runtimes_list:
             if not line:
                 continue
-            quad = line.split(' ', 1)[0]
+            quad = line.split(maxsplit=1)[0]
             candidate_id, _, candidate_branch = quad.split('/')[1:]
             if candidate_id == runtime and candidate_branch == branch:
                 return candidate_remote
