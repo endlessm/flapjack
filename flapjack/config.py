@@ -144,6 +144,9 @@ def manifest():
 def upstream_sdk_checkout():
     """Returns the path where the upstream SDK git repo is cloned."""
     sdk_repo_name = sdk_upstream().rsplit('/', 1)[-1]
+    if sdk_repo_name.endswith('.git'):
+        sdk_repo_name = sdk_repo_name[:-4]
+
     return os.path.join(checkoutdir(), sdk_repo_name)
 
 
