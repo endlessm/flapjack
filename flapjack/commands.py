@@ -105,15 +105,16 @@ class Command:
 def find_remote_for_runtime(runtime, branch):
     """Search for the runtime in all configured remotes. Expensive check."""
     remotes_list = ext.flatpak('remotes', output=True).split('\n')[1:-1]
-    remotes = [line.split(' ', 1)[0] for line in remotes_list if line]
+    remotes = [line.split(maxsplit=1) for line in remotes_list if line]
     for candidate_remote in remotes:
-        runtimes_list = ext.flatpak('remote-ls', candidate_remote, '--runtime',
+        candidate_remote_name = candidate_remote[0]
+        runtimes_list = ext.flatpak('remote-ls', candidate_remote_name, '--runtime',
                                     '-d', output=True)
         runtimes_list = runtimes_list.split('\n')[1:]
         for line in runtimes_list:
             if not line:
                 continue
-            quad = line.split(' ', 1)[0]
+            quad = line.split(maxsplit=1)[0]
             candidate_id, _, candidate_branch = quad.split('/')[1:]
             if candidate_id == runtime and candidate_branch == branch:
                 return candidate_remote
@@ -125,8 +126,10 @@ def find_remote_for_runtime(runtime, branch):
 def ensure_runtime(remote, runtime, branch, subpaths=False):
     if ext.flatpak('info', '--show-commit', runtime, branch, code=True) != 0:
         if remote is None:
-            remote = find_remote_for_runtime(runtime, branch)
-        ext.flatpak('install', remote, runtime, branch)
+            remote_name, remote_type = find_remote_for_runtime(runtime, branch)
+            ext.flatpak('install', '--{}'.format(remote_type), remote_name, runtime, branch)
+        else:
+            ext.flatpak('install', remote, runtime, branch)
     if subpaths:
         ext.flatpak('update', '--subpath=', runtime, branch)
     else:

@@ -11,7 +11,7 @@ _DEFAULTS = {
         'shell_prefix': 'flapjack',
         'user_installation': 'no',
 
-        'sdk_upstream': 'git://git.gnome.org/gnome-sdk-images',
+        'sdk_upstream': 'https://gitlab.gnome.org/GNOME/gnome-sdk-images.git',
         'sdk_upstream_branch': 'master',
         'sdk_id': 'org.gnome.Sdk',
         'sdk_branch': 'master',
@@ -144,6 +144,9 @@ def manifest():
 def upstream_sdk_checkout():
     """Returns the path where the upstream SDK git repo is cloned."""
     sdk_repo_name = sdk_upstream().rsplit('/', 1)[-1]
+    if sdk_repo_name.endswith('.git'):
+        sdk_repo_name = sdk_repo_name[:-4]
+
     return os.path.join(checkoutdir(), sdk_repo_name)
 
 
