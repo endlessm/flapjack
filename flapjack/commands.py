@@ -108,8 +108,8 @@ def find_remote_for_runtime(runtime, branch):
     remotes = [line.split(maxsplit=1) for line in remotes_list if line]
     for candidate_remote in remotes:
         candidate_remote_name = candidate_remote[0]
-        runtimes_list = ext.flatpak('remote-ls', candidate_remote_name, '--runtime',
-                                    '-d', output=True)
+        runtimes_list = ext.flatpak('remote-ls', candidate_remote_name,
+                                    '--runtime', '-d', output=True)
         runtimes_list = runtimes_list.split('\n')[1:]
         for line in runtimes_list:
             if not line:
@@ -127,7 +127,8 @@ def ensure_runtime(remote, runtime, branch, subpaths=False):
     if ext.flatpak('info', '--show-commit', runtime, branch, code=True) != 0:
         if remote is None:
             remote_name, remote_type = find_remote_for_runtime(runtime, branch)
-            ext.flatpak('install', '--{}'.format(remote_type), remote_name, runtime, branch)
+            ext.flatpak('install', '--{}'.format(remote_type), remote_name,
+                        runtime, branch)
         else:
             ext.flatpak('install', remote, runtime, branch)
     if subpaths:
