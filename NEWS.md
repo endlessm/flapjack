@@ -1,3 +1,16 @@
+Version 0.1.5
+=============
+
+- Added a new `--verbose` option, which shows the git, flatpak, and
+  flatpak-builder commands that flapjack runs internally.
+  Giving the option twice (`-vv`) also runs flatpak-builder with its own
+  `--verbose` option.
+  Thanks to Juan Pablo Ugarte for this feature!
+- Fixed a bug that caused installing extensions from a user remote to
+  fail. (Cosimo Cecchi)
+- Various minor fixes from Cosimo Cecchi, Manuel Quiñones, and Philip
+  Chimento.
+
 Version 0.1.4
 =============
 
