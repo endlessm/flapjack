@@ -127,14 +127,15 @@ def ensure_runtime(remote, runtime, branch, subpaths=False):
     if ext.flatpak('info', '--show-commit', runtime, branch, code=True) != 0:
         if remote is None:
             remote_name, remote_type = find_remote_for_runtime(runtime, branch)
+            # Don't assume yes here, since Flapjack picked an arbitrary remote
             ext.flatpak('install', '--{}'.format(remote_type), remote_name,
                         runtime, branch)
         else:
-            ext.flatpak('install', remote, runtime, branch)
+            ext.flatpak('install', '--assumeyes', remote, runtime, branch)
     if subpaths:
-        ext.flatpak('update', '--subpath=', runtime, branch)
+        ext.flatpak('update', '--assumeyes', '--subpath=', runtime, branch)
     else:
-        ext.flatpak('update', runtime, branch)
+        ext.flatpak('update', '--assumeyes', runtime, branch)
 
 
 def ensure_base_sdk():
