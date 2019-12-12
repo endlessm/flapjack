@@ -109,12 +109,11 @@ def find_remote_for_runtime(runtime, branch):
     for candidate_remote in remotes:
         candidate_remote_name = candidate_remote[0]
         runtimes_list = ext.flatpak('remote-ls', candidate_remote_name,
-                                    '--runtime', '-d', output=True)
+                                    '--runtime', '--columns=ref', output=True)
         runtimes_list = runtimes_list.split('\n')[1:]
-        for line in runtimes_list:
-            if not line:
+        for quad in runtimes_list:
+            if not quad:
                 continue
-            quad = line.split(maxsplit=1)[0]
             candidate_id, _, candidate_branch = quad.split('/')[1:]
             if candidate_id == runtime and candidate_branch == branch:
                 return candidate_remote
