@@ -18,7 +18,7 @@ _DEFAULTS = {
         'sdk_manifest_json': '${sdk_id}.json.in',
         'sdk_repo_name': 'flapjack-source',
         'sdk_repo_definition':
-            'https://sdk.gnome.org/gnome-nightly.flatpakrepo',
+            'https://nightly.gnome.org/gnome-nightly.flatpakrepo',
         'dev_sdk_id': 'org.gnome.dev.Sdk',
         'add_extensions': 'org.gnome.Sdk.Docs:share/runtime/docs',
 
