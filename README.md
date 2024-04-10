@@ -153,6 +153,6 @@ in your current shell. But it won't be available next time you log in.
 To install it, add the line above to your `.bashrc`.
 
 [1]: https://github.com/endlessm/flapjack/blob/master/example.flapjack.ini
-[2]: http://www.youtube.com/watch?v=hE5nJrGnX-U&t=40m4s "GUADEC 2017 - Tristan Van Berkom - GNOME Build Strategies and BuildStream"
+[2]: https://www.youtube.com/watch?v=hE5nJrGnX-U&t=40m4s "GUADEC 2017 - Tristan Van Berkom - GNOME Build Strategies and BuildStream"
 [3]: https://stedolan.github.io/jq/
 [4]: https://github.com/endlessm/flapjack/blob/master/build/flapjack.bash-completion
